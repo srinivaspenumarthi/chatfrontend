@@ -30,7 +30,7 @@ function start() {
 }
 
 // Connect to server
-const socket = io('http://localhost:8000');
+const socket = io('https://chatbackend-wdog.onrender.com');
 
 // On disconnect
 socket.on('disconnected', () => {
