@@ -258,73 +258,42 @@
 }
 
 
- @media (max-width: 1024px) {
-  body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Make sure body takes full height of the viewport */
-    margin: 0;
-    overflow: hidden; /* Prevent body from scrolling */
-  }
+@media (max-width: 1024px) {
+      body {
+        flex-direction: column;
+      }
 
-  .video-container {
-    flex: 1; /* Allow video container to take up available space */
-    height: 70vh; /* Set the height of the video container to 70% */
-    position: relative; /* Make sure video is positioned within the container */
-  }
+      .video-container {
+        height: 60vh;
+      }
 
-  #my-video {
-    width: 160px;
-    height: 90px;
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    border-radius: 16px;
-    z-index: 10;
-  }
+      #my-video {
+        width: 160px;
+        height: 90px;
+        bottom: 1rem;
+        right: 1rem;
+      }
 
-  .chat-holder {
-    flex: none; /* Prevent chat holder from expanding */
-    height: auto; /* Let the chat holder adjust to content */
-    width: 100%;
-    position: relative;
-    padding: 1rem;
-    padding-bottom: 6rem; /* Leave space at the bottom for the input box */
-  }
+      .chat-holder {
+        width: 100%;
+        height: 40vh;
+      }
 
-  .input {
-    position: fixed; /* Fix the input box to the bottom */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1rem;
-    display: flex;
-    gap: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 20; /* Ensure it stays on top */
-  }
+      .input {
+        padding: 1rem;
+      }
 
-  .wrapper {
-    padding: 1.5rem;
-    overflow-y: auto;
-    max-height: calc(100vh - 12rem); /* Limit height of the chat window to fit the screen */
-    margin-bottom: 6rem; /* Ensure content doesn’t get hidden behind the fixed input */
-  }
+      #video-controls {
+        bottom: 9rem;
+        left: 1rem;
+      }
 
-  #video-controls {
-    position: absolute;
-    bottom: 2rem;
-    left: 1rem;
-    z-index: 15; /* Make sure controls stay above the video but below the input */
-  }
-
-  #video-controls button {
-    width: 42px;
-    height: 42px;
-    font-size: 1rem;
-  }
-}
-
+      #video-controls button {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+      }
+    }
 
   </style>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
