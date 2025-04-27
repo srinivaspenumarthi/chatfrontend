@@ -258,65 +258,42 @@
 }
 
 
-   @media (max-width: 1024px) {
-  body {
-    flex-direction: column;
-  }
+  @media (max-width: 1024px) {
+      body {
+        flex-direction: column;
+      }
 
-  .video-container {
-    height: 60vh;
-  }
+      .video-container {
+        height: 60vh;
+      }
 
-  #my-video {
-    width: 160px;
-    height: 90px;
-    bottom: 1rem;
-    right: 1rem;
-  }
+      #my-video {
+        width: 160px;
+        height: 90px;
+        bottom: 1rem;
+        right: 1rem;
+      }
 
-  .chat-holder {
-    width: 100%;
-    height: auto; /* Let it take up only the necessary height */
-    flex: none;
-    position: relative;
-  }
+      .chat-holder {
+        width: 100%;
+        height: 40vh;
+      }
 
-  .input {
-    padding: 1rem;
-    display: flex;
-    gap: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(0, 0, 0, 0.2);
-    position: fixed; /* Keep it at the bottom */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10; /* Ensure it's on top of other content */
-  }
+      .input {
+        padding: 1rem;
+      }
 
-  .wrapper {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding-bottom: 5rem; /* Create space for the input box */
-  }
+      #video-controls {
+        bottom: 9rem;
+        left: 1rem;
+      }
 
-  #video-controls {
-    bottom: 9rem;
-    left: 1rem;
-  }
-
-  #video-controls button {
-    width: 42px;
-    height: 42px;
-    font-size: 1rem;
-  }
-}
+      #video-controls button {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+      }
+    }
 
   </style>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
