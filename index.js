@@ -30,7 +30,7 @@ function start() {
 }
 
 // Connect to server
-const socket = io('https://chatbackend-1-4jtf.onrender.com');
+const socket = io('https://chatbackend-wdog.onrender.com');
 
 // On disconnect
 socket.on('disconnected', () => {
