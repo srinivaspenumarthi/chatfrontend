@@ -116,6 +116,7 @@ socket.on('ice:reply', async ({ candidate }) => {
 socket.on('roomid', id => {
   roomid = id;
   console.log(`Joined room with ID: ${roomid}`);
+  alert('Stranger has connected.');
 });
 
 // Send button handler
