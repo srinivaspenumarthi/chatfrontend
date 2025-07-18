@@ -2,256 +2,30 @@
    <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Primary Meta Tags -->
-  <title>Random Connect – Safe Anonymous Video Chat with Strangers | Free Global Chat Platform</title>
-  <meta name="description" content="Join millions on Random Connect - the safest anonymous video & text chat platform. AI-moderated, no signup required. Connect with strangers worldwide instantly & securely!" />
-  <meta name="keywords" content="random chat, safe video chat strangers, anonymous chat, moderated stranger chat, no signup chat, talk to strangers safely, global chat app, free stranger chat, WebRTC chat, anonymous text chat, secure random video chat, AI moderated chat" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="language" content="English" />
-  <meta name="author" content="Random Connect" />
-  <meta name="category" content="Social Networking" />
-  <meta name="theme-color" content="#0F172A" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="mobile-web-app-capable" content="yes" />
+ <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Random Connect - Talk to Random People Online Instantly | Free & Safe</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/android-chrome-512x512.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/android-chrome-192x192.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<meta name="description" content="Connect instantly with random strangers worldwide on Random Connect! Enjoy safe, anonymous conversations, make new friends, and experience real-time chat without signup or registration. Start chatting now for free!" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<meta name="keywords" content="Random connect, Stranger chat, Random chat app, Talk to strangers online, Free random chat, Anonymous chat, Chat with random people, Connect with strangers, Meet new friends online, Instant stranger chat, Online stranger chat, Global chat app, Chat without signup, Safe online chatting, Random video chat, Video call with strangers, Text chat with strangers, Random voice chat, Free video chat, Webcam chat app, No login chat, Stranger video call, Random cam chat, Stranger video chat, Random chat with girls, Chat with boys, Chat with girls, Random people chat, Worldwide stranger chat, Meet strangers instantly, Social chat app, Random friend finder, Virtual friend chat, Online hangout app, Instant chat rooms, Stranger chat rooms, Voice call strangers, Group chat online, Safe stranger interaction, Anonymous video chat, Webcam with strangers, Talk to random people, Video chat without registration, Chat now with strangers, Make new friends online, Free global chat, No account needed chat, Meet real people, Start chat instantly, Find random friends, Random chat website, Talk with people online, Stranger meetup app, Global video call app, Live chat app, Free stranger video call, Meet online strangers, Random online meetups, Connect instantly online, Video call people now, Talk to unknown people, Real-time chat app, WebRTC random chat, Secure stranger chat, One-click chat, Stranger connect platform, Chat with strangers safely, Fast connect chat app, HD video chat, International chat app, Anonymous cam chat, Privacy-first random chat, Worldwide friend chat, Chat with people globally, Meet random users online, Stranger talk platform, Easy stranger chat, Random user video call, Online video meetup, One-on-one chat app, Explore global users, Discover new people, Just talk to strangers, No signup stranger call, Fast random connect, Fun stranger chat, Privacy-focused chat, Real people real talk, Minimal UI chat app, Start video chat instantly, Fun global chatting, Talk to anyone online, Match and chat, Online webcam chat app, Instant connect with strangers, Find and talk instantly, Video meet strangers, Secure anonymous call, Stranger discovery platform" />
 
-  <!-- Enhanced SEO Meta Tags -->
-  <meta name="geo.region" content="US" />
-  <meta name="geo.placename" content="Global" />
-  <meta name="rating" content="general" />
-  <meta name="distribution" content="global" />
-  <meta name="audience" content="all" />
-  <meta name="copyright" content="Random Connect" />
-  <meta name="revisit-after" content="1 day" />
-  <meta name="expires" content="never" />
+<meta property="og:title" content="Random Connect - Talk to Random People Online Instantly" />
+<meta property="og:description" content="Meet new people instantly!Random Connect lets you connect with random strangers worldwide for free, safely and anonymously. Start chatting now!" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://randomconnect.netlify.app" />
+<meta property="og:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Random Connect - Talk to Random People Online Instantly" />
+<meta name="twitter:description" content="Talk to random people worldwide for free with Random Connect. Safe, instant, and anonymous conversations — start chatting today!" />
+<meta name="twitter:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
 
-  <!-- Performance & Critical Resource Hints -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://cdn.socket.io" crossorigin />
-  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
-  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-  <link rel="dns-prefetch" href="//api.randomconnect.com" />
-  <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
-  
-  <!-- Critical CSS Preload -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <link rel="preload" href="/css/critical.css" as="style" />
-  <link rel="preload" href="/js/app.min.js" as="script" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
-
-  <!-- Canonical & Alternate URLs -->
-  <link rel="canonical" href="https://randomconnect.app/" />
-  <link rel="alternate" href="https://randomconnect.app/" hreflang="en" />
-  <link rel="alternate" href="https://randomconnect.app/es/" hreflang="es" />
-  <link rel="alternate" href="https://randomconnect.app/fr/" hreflang="fr" />
-  <link rel="alternate" href="https://randomconnect.app/de/" hreflang="de" />
-  <link rel="alternate" href="https://randomconnect.app/pt/" hreflang="pt" />
-  <link rel="alternate" href="https://randomconnect.app/it/" hreflang="it" />
-  <link rel="alternate" href="https://randomconnect.app/ja/" hreflang="ja" />
-  <link rel="alternate" href="https://randomconnect.app/ko/" hreflang="ko" />
-  <link rel="alternate" href="https://randomconnect.app/zh/" hreflang="zh" />
-  <link rel="alternate" href="https://randomconnect.app/hi/" hreflang="hi" />
-  <link rel="alternate" href="https://randomconnect.app/ar/" hreflang="ar" />
-  <link rel="alternate" href="https://randomconnect.app/ru/" hreflang="ru" />
-
-  <!-- PWA & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="/icons/android-chrome-512x512.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <meta name="msapplication-TileColor" content="#0F172A" />
-  <meta name="msapplication-config" content="/browserconfig.xml" />
-
-  <!-- Open Graph (Enhanced) -->
-  <meta property="og:title" content="Random Connect – Safe Anonymous Video Chat with Strangers" />
-  <meta property="og:description" content="Join the safest anonymous video & text chat platform with AI moderation. Connect with strangers worldwide instantly. No signup required - start chatting now!" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://randomconnect.app" />
-  <meta property="og:image" content="https://randomconnect.app/images/og-image.jpg" />
-  <meta property="og:image:alt" content="Random Connect - Safe Anonymous Video Chat Platform" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Random Connect" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="es_ES" />
-  <meta property="og:locale:alternate" content="fr_FR" />
-  <meta property="og:locale:alternate" content="de_DE" />
-  <meta property="fb:app_id" content="YOUR_FB_APP_ID" />
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@RandomConnect" />
-  <meta name="twitter:creator" content="@RandomConnect" />
-  <meta name="twitter:title" content="Random Connect – Safe Anonymous Video Chat with Strangers" />
-  <meta name="twitter:description" content="Join the safest anonymous video & text chat platform with AI moderation. Connect with strangers worldwide instantly!" />
-  <meta name="twitter:image" content="https://randomconnect.app/images/twitter-card.jpg" />
-  <meta name="twitter:image:alt" content="Random Connect - Safe Anonymous Video Chat" />
-
-  <!-- LinkedIn & Professional Networks -->
-  <meta property="linkedin:owner" content="company-id" />
-  <meta name="pinterest-rich-pin" content="true" />
-
-  <!-- Enhanced Security Headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(), sync-xhr=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io https://www.google-analytics.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://cdn.socket.io wss: https://api.randomconnect.com https://www.google-analytics.com; img-src 'self' data: https: blob:; media-src 'self' blob: https:; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
-
-  <!-- Structured Data (Enhanced) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Random Connect",
-    "url": "https://randomconnect.app",
-    "description": "Safe, anonymous video and text chat platform with AI moderation. Connect with strangers worldwide instantly without signup.",
-    "applicationCategory": "SocialNetworkingApplication",
-    "operatingSystem": "Web Browser, iOS, Android",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "featureList": [
-      "Anonymous video chat",
-      "AI-powered moderation",
-      "Real-time text messaging",
-      "No registration required",
-      "Multi-language support",
-      "Global user base",
-      "Safe chat environment",
-      "Interest-based matching"
-    ],
-    "screenshot": "https://randomconnect.app/images/app-screenshot.jpg",
-    "softwareVersion": "2.0",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.5",
-      "ratingCount": "12847"
-    },
-    "provider": {
-      "@type": "Organization",
-      "name": "Random Connect",
-      "url": "https://randomconnect.app"
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Random Connect",
-    "url": "https://randomconnect.app",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://randomconnect.app/images/logo.png",
-      "width": "512",
-      "height": "512"
-    },
-    "description": "Leading global platform for safe, anonymous video and text chat with strangers. AI-moderated and free to use.",
-    "foundingDate": "2024",
-    "sameAs": [
-      "https://twitter.com/RandomConnect",
-      "https://facebook.com/RandomConnect",
-      "https://instagram.com/RandomConnect",
-      "https://linkedin.com/company/randomconnect",
-      "https://youtube.com/c/RandomConnect"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+1-800-CONNECT",
-      "contactType": "customer service",
-      "availableLanguage": ["English", "Spanish", "French", "German", "Portuguese", "Italian", "Japanese", "Korean", "Chinese", "Hindi", "Arabic", "Russian"]
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is Random Connect safe to use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, Random Connect uses AI-powered moderation, real-time monitoring, and community reporting to ensure a safe chatting environment."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Do I need to sign up to use Random Connect?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No, Random Connect requires no registration or signup. You can start chatting immediately with complete anonymity."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What languages does Random Connect support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Random Connect supports over 12 languages including English, Spanish, French, German, Portuguese, Italian, Japanese, Korean, Chinese, Hindi, Arabic, and Russian."
-        }
-      }
-    ]
-  }
-  </script>
-
-  <!-- Performance Monitoring -->
-  <script>
-    // Critical Performance Metrics
-    if ('performance' in window) {
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          const perfData = performance.getEntriesByType('navigation')[0];
-          if (perfData) {
-            gtag('event', 'page_load_time', {
-              custom_parameter: Math.round(perfData.loadEventEnd - perfData.fetchStart)
-            });
-          }
-        }, 0);
-      });
-    }
-  </script>
-
-  <!-- WebRTC & Chat Dependencies -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-mZLF4UVrpi/QTWPA7BjNPEnkIfRFn4ZEO3Qt/HeMu2W8aLQCP6ezKeUGs2lzd760" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js" integrity="sha512-4wTu8feWO+p6cC4bUWH8A/6avT7S7SZNLhzd+3+cF3hOPWOe4lw6zHDsBUgJSDbPKlwQ7T3WLJTcQIpKnbm3Pw==" crossorigin="anonymous"></script>
-  
-  <!-- Analytics (Replace with your tracking codes) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID', {
-      page_title: 'Random Connect - Safe Anonymous Video Chat',
-      page_location: window.location.href,
-      send_page_view: true
-    });
-  </script>
-
-  <!-- Microsoft Clarity (Optional) -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "CLARITY_PROJECT_ID");
-  </script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
   <!-- Critical CSS -->
   <style>
