@@ -1,0 +1,20 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /config/
+Disallow: /temp/
+Disallow: /cgi-bin/
+Disallow: /*?sessionid=
+Allow: /
+
+Sitemap: https://randomconnect.app/sitemap.xml
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
