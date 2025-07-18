@@ -398,25 +398,30 @@ socket.on('remote-socket', (id) => {
   };
 
   // Connection state handler
-  peer.onconnectionstatechange = () => {
-    console.log('Connection State:', peer.connectionState);
-    
-    switch (peer.connectionState) {
-      case 'connected':
-        console.log('Peer connection established');
-        break;
-      case 'disconnected':
-        console.log('Peer connection disconnected');
-        break;
-      case 'failed':
-        console.error('Peer connection failed');
-        handleConnectionError();
-        break;
-      case 'closed':
-        console.log('Peer connection closed');
-        break;
-    }
-  };
+ // Connection state handler
+peer.onconnectionstatechange = () => {
+  console.log('Connection State:', peer.connectionState);
+  
+  switch (peer.connectionState) {
+    case 'connected':
+      console.log('Peer connection established');
+      isConnected = true;
+      hideLookingMessage();          // ✅ Hide modal/UI here
+      updateConnectionState(true);   // ✅ Enable UI (chat, buttons, etc.)
+      break;
+    case 'disconnected':
+      console.log('Peer connection disconnected');
+      break;
+    case 'failed':
+      console.error('Peer connection failed');
+      handleConnectionError();
+      break;
+    case 'closed':
+      console.log('Peer connection closed');
+      break;
+  }
+};
+
 
   // Start media capture
   start();
