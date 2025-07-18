@@ -173,19 +173,7 @@ async function start() {
       });
 
       // Enhanced ontrack handler
-      peer.ontrack = async (event) => {
-        console.log('Received remote track:', event.track.kind);
-        
-        if (event.streams && event.streams[0]) {
-          remoteStream = event.streams[0];
-          
-          // Play remote video with proper error handling
-          await playVideo(strangerVideo, remoteStream);
-          
-          // Hide looking message when video is received and playing
-          hideLookingMessage();
-        }
-      };
+      
       
       // Reset connection attempts on successful media setup
       connectionAttempts = 0;
@@ -346,7 +334,24 @@ socket.on('remote-socket', (id) => {
   
   // Create peer connection with enhanced configuration
   peer = new RTCPeerConnection(iceServers);
+  peer.ontrack = async (event) => {
+  console.log('Received remote track:', event.track.kind);
 
+  if (event.streams && event.streams[0]) {
+    remoteStream = event.streams[0];
+  } else {
+    // Fallback: build stream manually
+    if (!remoteStream) {
+      remoteStream = new MediaStream();
+    }
+    remoteStream.addTrack(event.track);
+  }
+
+  // ✅ Attempt to play
+  await playVideo(strangerVideo, remoteStream);
+  hideLookingMessage();
+  updateConnectionState(true);
+};
   // Enhanced negotiation handler
   peer.onnegotiationneeded = async () => {
     try {
