@@ -173,16 +173,21 @@ socket.on('ice:reply', async ({ candidate }) => {
 });
 
 socket.on('skipped', () => {
-  showLookingMessage();
-  cleanupConnection();
-  clearChat();
+  console.log('Other user skipped');
 
+  // Cleanup current call
+  cleanupConnection();
+  showLookingMessage();
+  document.querySelector('.wrapper').innerHTML = '';
+
+  // Start finding a new person
   setTimeout(() => {
-    socket.emit('start', person => {
+    socket.emit('start', (person) => {
       type = person;
     });
   }, 1000);
 });
+
 
 // ----------- Message Logic -----------
 
