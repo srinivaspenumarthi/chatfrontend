@@ -13,6 +13,31 @@ let isConnected = false;
 let isConnecting = false;
 let connectionAttempts = 0;
 const MAX_CONNECTION_ATTEMPTS = 3;
+let localStream;
+let remoteStream;
+
+// ICE servers configuration with TURN servers for better connectivity
+const iceServers = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    // Free TURN servers for better NAT traversal
+    {
+      urls: 'turn:numb.viagenie.ca',
+      credential: 'turnserver',
+      username: 'webrtc@live.com'
+    },
+    {
+      urls: 'turn:turn.bistri.com:80',
+      credential: 'homeo',
+      username: 'homeo'
+    }
+  ],
+  iceCandidatePoolSize: 10
+};
 
 // Connection state management
 function updateConnectionState(connected) {
@@ -51,39 +76,137 @@ function hideLookingMessage() {
 // Initialize with looking message visible
 showLookingMessage();
 
-// Start media capture
-function start() {
-  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-    .then(stream => {
-      if (peer && myVideo) {
-        myVideo.srcObject = stream;
-        
-        // Add tracks to peer connection
-        stream.getTracks().forEach(track => {
-          peer.addTrack(track, stream);
-        });
-
-        peer.ontrack = e => {
-          if (strangerVideo && e.streams[0]) {
-            strangerVideo.srcObject = e.streams[0];
-            strangerVideo.play().catch(ex => {
-              console.error('Error playing remote video:', ex);
-            });
-            
-            // Hide looking message when video is received
-            hideLookingMessage();
-          }
-        };
-        
-        // Reset connection attempts on successful media setup
-        connectionAttempts = 0;
-      }
-    })
-    .catch(ex => {
-      console.error('Error accessing media devices:', ex);
-      alert('Could not access media devices. Please check permissions.');
-      showLookingMessage();
+// Enhanced video play function with error handling
+async function playVideo(videoElement, stream) {
+  if (!videoElement || !stream) return;
+  
+  try {
+    // Stop any existing playback
+    if (videoElement.srcObject) {
+      const tracks = videoElement.srcObject.getTracks();
+      tracks.forEach(track => track.stop());
+    }
+    
+    // Set new stream
+    videoElement.srcObject = stream;
+    
+    // Add required attributes for mobile compatibility
+    videoElement.setAttribute('playsinline', '');
+    videoElement.setAttribute('autoplay', '');
+    videoElement.muted = videoElement === myVideo; // Only mute local video
+    
+    // Wait for metadata to load
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Video load timeout')), 5000);
+      
+      videoElement.addEventListener('loadedmetadata', () => {
+        clearTimeout(timeout);
+        resolve();
+      }, { once: true });
+      
+      videoElement.addEventListener('error', (e) => {
+        clearTimeout(timeout);
+        reject(e);
+      }, { once: true });
     });
+    
+    // Attempt to play
+    await videoElement.play();
+    console.log('Video playing successfully');
+    
+  } catch (error) {
+    console.error('Error playing video:', error);
+    
+    // Retry with user interaction fallback
+    if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+      console.log('Autoplay blocked, waiting for user interaction');
+      
+      // Show click to play message
+      const playButton = document.createElement('button');
+      playButton.textContent = 'Click to Play Video';
+      playButton.style.position = 'absolute';
+      playButton.style.top = '50%';
+      playButton.style.left = '50%';
+      playButton.style.transform = 'translate(-50%, -50%)';
+      playButton.style.zIndex = '1000';
+      
+      videoElement.parentNode.appendChild(playButton);
+      
+      playButton.addEventListener('click', async () => {
+        try {
+          await videoElement.play();
+          playButton.remove();
+        } catch (retryError) {
+          console.error('Retry play failed:', retryError);
+        }
+      });
+    }
+  }
+}
+
+// Start media capture with enhanced error handling
+async function start() {
+  try {
+    // Request media with specific constraints
+    const constraints = {
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      },
+      video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        frameRate: { ideal: 30 }
+      }
+    };
+    
+    localStream = await navigator.mediaDevices.getUserMedia(constraints);
+    
+    if (peer && myVideo) {
+      // Play local video
+      await playVideo(myVideo, localStream);
+      
+      // Add tracks to peer connection
+      localStream.getTracks().forEach(track => {
+        peer.addTrack(track, localStream);
+      });
+
+      // Enhanced ontrack handler
+      peer.ontrack = async (event) => {
+        console.log('Received remote track:', event.track.kind);
+        
+        if (event.streams && event.streams[0]) {
+          remoteStream = event.streams[0];
+          
+          // Play remote video with proper error handling
+          await playVideo(strangerVideo, remoteStream);
+          
+          // Hide looking message when video is received and playing
+          hideLookingMessage();
+        }
+      };
+      
+      // Reset connection attempts on successful media setup
+      connectionAttempts = 0;
+    }
+  } catch (error) {
+    console.error('Error accessing media devices:', error);
+    
+    let errorMessage = 'Could not access media devices. ';
+    if (error.name === 'NotFoundError') {
+      errorMessage += 'No camera or microphone found.';
+    } else if (error.name === 'NotAllowedError') {
+      errorMessage += 'Please allow camera and microphone access.';
+    } else if (error.name === 'NotReadableError') {
+      errorMessage += 'Camera or microphone is being used by another application.';
+    } else {
+      errorMessage += 'Please check your device permissions.';
+    }
+    
+    alert(errorMessage);
+    showLookingMessage();
+  }
 }
 
 // Connect to server
@@ -116,7 +239,7 @@ socket.on('disconnected', () => {
   // Automatically search for a new connection after delay
   setTimeout(() => {
     startNewConnection();
-  }, 2000);
+  }, 3000);
 });
 
 // Skip button functionality
@@ -154,7 +277,7 @@ function handleSkip() {
   // Start looking for new connection after delay
   setTimeout(() => {
     startNewConnection();
-  }, 2000);
+  }, 3000);
 }
 
 // Start new connection
@@ -178,7 +301,7 @@ function startNewConnection() {
   });
 }
 
-// Cleanup function
+// Enhanced cleanup function
 function cleanupConnection() {
   isConnected = false;
   isConnecting = false;
@@ -189,10 +312,14 @@ function cleanupConnection() {
     peer = null;
   }
   
+  // Stop and clear remote stream
+  if (remoteStream) {
+    remoteStream.getTracks().forEach(track => track.stop());
+    remoteStream = null;
+  }
+  
   // Clear remote video
-  if (strangerVideo && strangerVideo.srcObject) {
-    const tracks = strangerVideo.srcObject.getTracks();
-    tracks.forEach(track => track.stop());
+  if (strangerVideo) {
     strangerVideo.srcObject = null;
   }
   
@@ -215,17 +342,15 @@ socket.emit('start', (person) => {
 // Remote socket received
 socket.on('remote-socket', (id) => {
   remoteSocket = id;
+  console.log('Remote socket connected:', id);
   
-  peer = new RTCPeerConnection({
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' }
-    ]
-  });
+  // Create peer connection with enhanced configuration
+  peer = new RTCPeerConnection(iceServers);
 
+  // Enhanced negotiation handler
   peer.onnegotiationneeded = async () => {
     try {
+      console.log('Negotiation needed');
       await webrtc();
     } catch (error) {
       console.error('Error during negotiation:', error);
@@ -233,51 +358,101 @@ socket.on('remote-socket', (id) => {
     }
   };
 
-  peer.onicecandidate = e => {
-    if (e.candidate && remoteSocket) {
-      socket.emit('ice:send', { candidate: e.candidate, to: remoteSocket });
+  // ICE candidate handler
+  peer.onicecandidate = (event) => {
+    if (event.candidate && remoteSocket) {
+      console.log('Sending ICE candidate:', event.candidate.type);
+      socket.emit('ice:send', { candidate: event.candidate, to: remoteSocket });
+    } else if (!event.candidate) {
+      console.log('ICE gathering complete');
     }
   };
 
+  // Enhanced ICE connection state handler
   peer.oniceconnectionstatechange = () => {
     console.log('ICE Connection State:', peer.iceConnectionState);
     
-    if (peer.iceConnectionState === 'connected' || peer.iceConnectionState === 'completed') {
-      connectionAttempts = 0;
-      hideLookingMessage();
-    } else if (peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'disconnected') {
-      console.error('ICE Connection failed/disconnected');
-      handleConnectionError();
+    switch (peer.iceConnectionState) {
+      case 'connected':
+      case 'completed':
+        console.log('ICE connection established');
+        connectionAttempts = 0;
+        break;
+      case 'disconnected':
+        console.log('ICE connection disconnected');
+        // Don't immediately fail, might reconnect
+        setTimeout(() => {
+          if (peer && peer.iceConnectionState === 'disconnected') {
+            handleConnectionError();
+          }
+        }, 5000);
+        break;
+      case 'failed':
+        console.error('ICE connection failed');
+        handleConnectionError();
+        break;
+      case 'closed':
+        console.log('ICE connection closed');
+        break;
     }
   };
 
+  // Connection state handler
   peer.onconnectionstatechange = () => {
     console.log('Connection State:', peer.connectionState);
     
-    if (peer.connectionState === 'failed' || peer.connectionState === 'disconnected') {
-      handleConnectionError();
+    switch (peer.connectionState) {
+      case 'connected':
+        console.log('Peer connection established');
+        break;
+      case 'disconnected':
+        console.log('Peer connection disconnected');
+        break;
+      case 'failed':
+        console.error('Peer connection failed');
+        handleConnectionError();
+        break;
+      case 'closed':
+        console.log('Peer connection closed');
+        break;
     }
   };
 
+  // Start media capture
   start();
 });
 
 function handleConnectionError() {
+  console.log('Handling connection error');
   showLookingMessage();
   cleanupConnection();
   
   // Try reconnecting with exponential backoff
-  const delay = Math.min(1000 * Math.pow(2, connectionAttempts - 1), 10000);
+  const delay = Math.min(2000 * Math.pow(2, connectionAttempts - 1), 15000);
+  console.log(`Reconnecting in ${delay}ms`);
+  
   setTimeout(() => {
-    startNewConnection();
+    if (connectionAttempts < MAX_CONNECTION_ATTEMPTS) {
+      startNewConnection();
+    } else {
+      alert('Connection failed multiple times. Please refresh the page.');
+    }
   }, delay);
 }
 
+// Enhanced WebRTC signaling
 async function webrtc() {
   if (type === 'p1' && peer) {
     try {
-      const offer = await peer.createOffer();
+      console.log('Creating offer');
+      const offer = await peer.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true
+      });
+      
       await peer.setLocalDescription(offer);
+      console.log('Local description set');
+      
       socket.emit('sdp:send', { sdp: peer.localDescription });
     } catch (error) {
       console.error('Error creating offer:', error);
@@ -290,9 +465,13 @@ async function webrtc() {
 socket.on('sdp:reply', async ({ sdp }) => {
   try {
     if (peer && sdp) {
+      console.log('Received SDP:', sdp.type);
+      
       await peer.setRemoteDescription(new RTCSessionDescription(sdp));
+      console.log('Remote description set');
       
       if (type === 'p2') {
+        console.log('Creating answer');
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         socket.emit('sdp:send', { sdp: peer.localDescription });
@@ -308,10 +487,12 @@ socket.on('sdp:reply', async ({ sdp }) => {
 socket.on('ice:reply', async ({ candidate }) => {
   try {
     if (candidate && peer && peer.remoteDescription) {
+      console.log('Adding ICE candidate:', candidate.type);
       await peer.addIceCandidate(new RTCIceCandidate(candidate));
     }
   } catch (error) {
     console.error('Error adding ICE candidate:', error);
+    // Don't fail the connection for ICE candidate errors
   }
 });
 
@@ -330,7 +511,7 @@ socket.on('skipped', () => {
   // Start looking for a new connection
   setTimeout(() => {
     startNewConnection();
-  }, 2000);
+  }, 3000);
 });
 
 // ----------- Message Logic -----------
@@ -364,7 +545,6 @@ function sendMessage() {
     inputBox.value = '';
   } else if (message !== '') {
     console.warn('Cannot send message: not properly connected');
-    // Optional: Show user feedback
     addMessageToChat('Message failed to send - not connected', 'error');
   }
 }
@@ -420,34 +600,36 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Toggle Video
+// Enhanced Toggle Video
 const toggleVideoBtn = document.getElementById('toggle-video');
 if (toggleVideoBtn) {
   toggleVideoBtn.onclick = () => {
-    const stream = myVideo?.srcObject;
-    const videoTrack = stream?.getVideoTracks()[0];
+    const videoTrack = localStream?.getVideoTracks()[0];
     
     if (videoTrack) {
       videoTrack.enabled = !videoTrack.enabled;
       
       toggleVideoBtn.classList.toggle('active', videoTrack.enabled);
       toggleVideoBtn.classList.toggle('inactive', !videoTrack.enabled);
+      
+      console.log('Video toggled:', videoTrack.enabled ? 'on' : 'off');
     }
   };
 }
 
-// Toggle Audio
+// Enhanced Toggle Audio
 const toggleAudioBtn = document.getElementById('toggle-audio');
 if (toggleAudioBtn) {
   toggleAudioBtn.onclick = () => {
-    const stream = myVideo?.srcObject;
-    const audioTrack = stream?.getAudioTracks()[0];
+    const audioTrack = localStream?.getAudioTracks()[0];
     
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;
       
       toggleAudioBtn.classList.toggle('active', audioTrack.enabled);
       toggleAudioBtn.classList.toggle('inactive', !audioTrack.enabled);
+      
+      console.log('Audio toggled:', audioTrack.enabled ? 'on' : 'off');
     }
   };
 }
@@ -461,6 +643,12 @@ if (endCallBtn) {
     }
     cleanupConnection();
     
+    // Stop local stream
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+    
     // Redirect with small delay to ensure cleanup
     setTimeout(() => {
       window.location.href = '/?disconnect';
@@ -471,6 +659,11 @@ if (endCallBtn) {
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
   cleanupConnection();
+  
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+  }
+  
   if (roomid) {
     socket.emit('end-call', roomid);
   }
@@ -479,10 +672,23 @@ window.addEventListener('beforeunload', () => {
 // Handle visibility change (tab switch)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    // Page is hidden
     console.log('Page hidden');
   } else {
-    // Page is visible
     console.log('Page visible');
+    // Optionally restart video if it stopped
+    if (localStream && myVideo && !myVideo.srcObject) {
+      playVideo(myVideo, localStream);
+    }
   }
 });
+
+// Handle browser autoplay policy
+document.addEventListener('click', () => {
+  // Try to play videos on first user interaction
+  if (myVideo && myVideo.srcObject && myVideo.paused) {
+    myVideo.play().catch(console.error);
+  }
+  if (strangerVideo && strangerVideo.srcObject && strangerVideo.paused) {
+    strangerVideo.play().catch(console.error);
+  }
+}, { once: true });
