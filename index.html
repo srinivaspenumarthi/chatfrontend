@@ -1,706 +1,614 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Connect - Instant Stranger Video Chat</title>
-  <meta
-    name="description"
-    content="Random Connect is a fast stranger video chat experience with anonymous matching, quick skip, and live text chat."
-  />
-  <meta
-    name="keywords"
-    content="random video chat, stranger chat, anonymous video chat, talk to strangers, webcam chat"
-  />
-  <meta property="og:title" content="Random Connect - Instant Stranger Video Chat" />
-  <meta
-    property="og:description"
-    content="Meet someone new in seconds with fast anonymous stranger chat and video calling."
-  />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://randomconnect.netlify.app" />
-  <meta property="og:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Random Connect - Instant Stranger Video Chat" />
-  <meta
-    name="twitter:description"
-    content="Fast anonymous stranger video chat with instant matching and live text fallback."
-  />
-  <meta name="twitter:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
-  <meta name="google-site-verification" content="3AaWbNEeEyx6MEkD_cG7jDuTCeZdahll3LvhpY7h4yo" />
-  <link rel="canonical" href="https://randomconnect.netlify.app/" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/android-chrome-512x512.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/android-chrome-192x192.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap"
-  />
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+ <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Random Connect - Talk to Random People Online Instantly | Free & Safe</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/android-chrome-512x512.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/android-chrome-192x192.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<meta name="description" content="Connect instantly with random strangers worldwide on Random Connect! Enjoy safe, anonymous conversations, make new friends, and experience real-time chat without signup or registration. Start chatting now for free!" />
+<meta name="keywords" content="Random connect, Stranger chat, Random chat app, Talk to strangers online, Free random chat, Anonymous chat, Chat with random people, Connect with strangers, Meet new friends online, Instant stranger chat, Online stranger chat, Global chat app, Chat without signup, Safe online chatting, Random video chat, Video call with strangers, Text chat with strangers, Random voice chat, Free video chat, Webcam chat app, No login chat, Stranger video call, Random cam chat, Stranger video chat, Random chat with girls, Chat with boys, Chat with girls, Random people chat, Worldwide stranger chat, Meet strangers instantly, Social chat app, Random friend finder, Virtual friend chat, Online hangout app, Instant chat rooms, Stranger chat rooms, Voice call strangers, Group chat online, Safe stranger interaction, Anonymous video chat, Webcam with strangers, Talk to random people, Video chat without registration, Chat now with strangers, Make new friends online, Free global chat, No account needed chat, Meet real people, Start chat instantly, Find random friends, Random chat website, Talk with people online, Stranger meetup app, Global video call app, Live chat app, Free stranger video call, Meet online strangers, Random online meetups, Connect instantly online, Video call people now, Talk to unknown people, Real-time chat app, WebRTC random chat, Secure stranger chat, One-click chat, Stranger connect platform, Chat with strangers safely, Fast connect chat app, HD video chat, International chat app, Anonymous cam chat, Privacy-first random chat, Worldwide friend chat, Chat with people globally, Meet random users online, Stranger talk platform, Easy stranger chat, Random user video call, Online video meetup, One-on-one chat app, Explore global users, Discover new people, Just talk to strangers, No signup stranger call, Fast random connect, Fun stranger chat, Privacy-focused chat, Real people real talk, Minimal UI chat app, Start video chat instantly, Fun global chatting, Talk to anyone online, Match and chat, Online webcam chat app, Instant connect with strangers, Find and talk instantly, Video meet strangers, Secure anonymous call, Stranger discovery platform" />
+
+<meta property="og:title" content="Random Connect - Talk to Random People Online Instantly" />
+<meta property="og:description" content="Meet new people instantly!Random Connect lets you connect with random strangers worldwide for free, safely and anonymously. Start chatting now!" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://randomconnect.netlify.app" />
+<meta property="og:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Random Connect - Talk to Random People Online Instantly" />
+<meta name="twitter:description" content="Talk to random people worldwide for free with Random Connect. Safe, instant, and anonymous conversations — start chatting today!" />
+<meta name="twitter:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
+<link rel="canonical" href="https://randomconnect.netlify.app/" />
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+  <!-- Critical CSS -->
   <style>
-    :root {
-      --bg: #07111f;
-      --panel: rgba(8, 18, 33, 0.78);
-      --panel-strong: rgba(10, 23, 42, 0.96);
-      --panel-soft: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.12);
-      --text: #f7fbff;
-      --muted: rgba(236, 245, 255, 0.72);
-      --mint: #85f7c7;
-      --gold: #ffd36b;
-      --coral: #ff7c69;
-      --blue: #76b7ff;
-      --shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: "DM Sans", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 15% 20%, rgba(118, 183, 255, 0.25), transparent 24%),
-        radial-gradient(circle at 85% 15%, rgba(255, 124, 105, 0.2), transparent 23%),
-        radial-gradient(circle at 70% 70%, rgba(133, 247, 199, 0.16), transparent 22%),
-        linear-gradient(160deg, #05101e 0%, #081528 55%, #0d1521 100%);
-      overflow-x: hidden;
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      inset: auto;
-      width: 38rem;
-      height: 38rem;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.4;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::before {
-      top: -10rem;
-      right: -12rem;
-      background: rgba(118, 183, 255, 0.2);
-    }
-
-    body::after {
-      left: -12rem;
-      bottom: -14rem;
-      background: rgba(255, 124, 105, 0.16);
-    }
-
-    .page {
-      position: relative;
-      z-index: 1;
-      width: min(1200px, calc(100% - 2rem));
-      margin: 0 auto;
-      padding: 1.25rem 0 2.5rem;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.6rem 0 1.5rem;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.85rem;
-      font-family: "Space Grotesk", sans-serif;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      font-size: 1.1rem;
-    }
-
-    .brand-mark {
-      width: 2.4rem;
-      height: 2.4rem;
-      border-radius: 0.8rem;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(145deg, rgba(133, 247, 199, 0.95), rgba(118, 183, 255, 0.92));
-      color: #07111f;
-      box-shadow: 0 16px 30px rgba(118, 183, 255, 0.24);
-    }
-
-    .trust-strip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7rem;
-      padding: 0.7rem 1rem;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .trust-dot {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 16px rgba(133, 247, 199, 0.85);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-      gap: 1.5rem;
-      align-items: stretch;
-    }
-
-    .hero-panel,
-    .preview-panel,
-    .spec-card,
-    .safety-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 1.75rem;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(22px);
-    }
-
-    .hero-panel {
-      padding: 2.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      width: fit-content;
-      padding: 0.6rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(255, 211, 107, 0.12);
-      color: #ffe49d;
-      border: 1px solid rgba(255, 211, 107, 0.22);
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    h1 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(3rem, 7vw, 5.6rem);
-      line-height: 0.94;
-      letter-spacing: -0.06em;
-      max-width: 10ch;
-    }
-
-    .accent {
-      display: inline-block;
-      color: var(--mint);
-    }
-
-    .lede {
-      max-width: 56ch;
-      color: var(--muted);
-      font-size: 1.1rem;
-      line-height: 1.7;
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      align-items: center;
-    }
-
-    .primary-cta,
-    .secondary-cta {
-      appearance: none;
-      text-decoration: none;
-      border-radius: 999px;
-      padding: 1rem 1.4rem;
-      font-weight: 700;
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-
-    .primary-cta {
-      color: #06111e;
-      background: linear-gradient(135deg, var(--mint), #b8ffe5);
-      box-shadow: 0 16px 32px rgba(133, 247, 199, 0.26);
-    }
-
-    .secondary-cta {
-      color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .primary-cta:hover,
-    .secondary-cta:hover {
-      transform: translateY(-2px);
-    }
-
-    .status-band {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.9rem;
-      margin-top: 0.4rem;
-    }
-
-    .status-pill {
-      padding: 1rem 1.1rem;
-      border-radius: 1.2rem;
-      background: rgba(255, 255, 255, 0.045);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .status-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.55);
-      margin-bottom: 0.45rem;
-    }
-
-    .status-value {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-
-    .status-value.live {
-      color: var(--mint);
-    }
-
-    .microcopy {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.8rem;
-      color: var(--muted);
-      font-size: 0.93rem;
-    }
-
-    .microcopy-card {
-      padding: 1rem 1.1rem;
-      border-radius: 1.15rem;
-      background: rgba(6, 17, 30, 0.52);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .preview-panel {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .preview-stage {
-      position: relative;
-      min-height: 480px;
-      border-radius: 1.3rem;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.58)),
-        linear-gradient(135deg, rgba(118, 183, 255, 0.2), rgba(255, 124, 105, 0.14)),
-        #06111f;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .preview-stage video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.88;
-    }
-
-    .preview-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 1rem;
-      background: linear-gradient(180deg, rgba(4, 10, 18, 0.15), rgba(4, 10, 18, 0.45));
-    }
-
-    .preview-chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-    }
-
-    .preview-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.55rem 0.8rem;
-      border-radius: 999px;
-      background: rgba(4, 11, 20, 0.66);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .preview-dot {
-      width: 0.5rem;
-      height: 0.5rem;
-      border-radius: 50%;
-      background: var(--mint);
-    }
-
-    .preview-copy {
-      max-width: 22rem;
-      padding: 1.1rem 1.15rem;
-      border-radius: 1.25rem;
-      background: rgba(4, 11, 20, 0.74);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .preview-copy h2 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.4rem;
-      margin-bottom: 0.45rem;
-    }
-
-    .preview-copy p {
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .preview-controls {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.9rem;
-      padding: 0.35rem 0.15rem 0;
-    }
-
-    .spec-card,
-    .safety-card {
-      padding: 1.2rem;
-    }
-
-    .preview-controls h3,
-    .preview-controls p,
-    .spec-card h3,
-    .safety-card h3 {
-      font-family: "Space Grotesk", sans-serif;
-    }
-
-    .preview-controls p,
-    .spec-card p,
-    .safety-card p,
-    .preview-meta,
-    .footer-links {
-      color: var(--muted);
-    }
-
-    .preview-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.9rem;
-      flex-wrap: wrap;
-      font-size: 0.92rem;
-    }
-
-    .detail-grid {
-      margin-top: 1.5rem;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 1rem;
-    }
-
-    .detail-stack {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .feature-list,
-    .safety-list {
-      list-style: none;
-      display: grid;
-      gap: 0.75rem;
-      margin-top: 0.9rem;
-    }
-
-    .feature-list li,
-    .safety-list li {
-      display: flex;
-      gap: 0.8rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .feature-bullet,
-    .safety-bullet {
-      width: 1.45rem;
-      height: 1.45rem;
-      flex: 0 0 1.45rem;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #07111f;
-      margin-top: 0.1rem;
-    }
-
-    .feature-bullet {
-      background: var(--mint);
-    }
-
-    .safety-bullet {
-      background: var(--gold);
-    }
-
-    .footer {
-      margin-top: 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 1rem 0 0.4rem;
-      color: rgba(255, 255, 255, 0.58);
-      font-size: 0.92rem;
-    }
-
-    .footer-links {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      text-decoration: none;
-    }
-
-    .footer a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    @media (max-width: 1080px) {
-      .hero,
-      .detail-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .preview-stage {
-        min-height: 360px;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .page {
-        width: min(100% - 1rem, 1200px);
-        padding-top: 0.8rem;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .hero-panel,
-      .preview-panel,
-      .spec-card,
-      .safety-card {
-        border-radius: 1.35rem;
-      }
-
-      .hero-panel,
-      .preview-panel,
-      .spec-card,
-      .safety-card {
-        padding: 1.25rem;
-      }
-
-      .status-band,
-      .microcopy {
-        grid-template-columns: 1fr;
-      }
-
-      .preview-stage {
-        min-height: 300px;
-      }
-
-      .preview-controls {
-        flex-direction: column;
-      }
-    }
+    /* Critical above-the-fold styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .hero-section { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .loading { display: none; }
+    .no-js .loading { display: block; }
   </style>
-</head>
-<body>
-  <main class="page">
-    <div class="topbar">
-      <div class="brand">
-        <span class="brand-mark">RC</span>
-        <span>Random Connect</span>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0a0b14;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Animated gradient background */
+      .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        opacity: 0.15;
+        z-index: 0;
+        animation: gradientShift 15s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        50% { transform: scale(1.1) rotate(5deg); }
+      }
+
+      /* Floating particles effect */
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(167, 139, 250, 0.4);
+        border-radius: 50%;
+        animation: float 20s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
+        width: 95%;
+        max-width: 1400px;
+        padding: 3rem;
+        display: flex;
+        gap: 4rem;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(40px);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      .content {
+        flex: 1;
+        max-width: 600px;
+      }
+
+      /* Badge above title */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(167, 139, 250, 0.1);
+        border: 1px solid rgba(167, 139, 250, 0.3);
+        border-radius: 100px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #c4b5fd;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.6s ease;
+      }
+
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        background: #a78bfa;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      .title {
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #818cf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        animation: fadeInUp 0.6s ease 0.1s backwards;
+      }
+
+      .subtitle {
+        font-size: 1.375rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+        font-weight: 400;
+        animation: fadeInUp 0.6s ease 0.2s backwards;
+      }
+
+      /* Features list */
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        animation: fadeInUp 0.6s ease 0.3s backwards;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        font-size: 0.9375rem;
+        color: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .feature-icon {
+        font-size: 1.125rem;
+      }
+
+      .stats {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.75rem;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.1) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 100px;
+        margin-bottom: 2.5rem;
+        animation: fadeInUp 0.6s ease 0.4s backwards, pulseGlow 3s infinite;
+      }
+
+      .stats-dot {
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #22c55e;
+        animation: pulse 2s infinite;
+      }
+
+      .stats-text {
+        font-size: 1rem;
+        color: #86efac;
+        font-weight: 600;
+      }
+
+      .cta-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: fadeInUp 0.6s ease 0.5s backwards;
+      }
+
+      .start-button {
+        padding: 1.125rem 2.75rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%);
+        border: none;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 24px rgba(167, 139, 250, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .start-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+      }
+
+      .start-button:hover::before {
+        left: 100%;
+      }
+
+      .start-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(167, 139, 250, 0.5);
+      }
+
+      .start-button:active {
+        transform: translateY(-1px);
+      }
+
+      /* Preview section with enhanced design */
+      .preview {
+        position: relative;
+        flex: 1;
+        max-width: 550px;
+        aspect-ratio: 16/10;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 24px;
+        overflow: hidden;
+        border: 2px solid rgba(167, 139, 250, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        animation: fadeInRight 0.8s ease;
+      }
+
+      .preview::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(129, 140, 248, 0.15));
+        z-index: 0;
+      }
+
+      .preview::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(167, 139, 250, 0.3), transparent 30%);
+        animation: rotate 8s linear infinite;
+        opacity: 0.5;
+      }
+
+      @keyframes rotate {
+        100% { transform: rotate(360deg); }
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: relative;
+        z-index: 1;
+      }
+
+      #toggle-camera {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(17, 24, 39, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 2;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      #toggle-camera:hover {
+        background: rgba(167, 139, 250, 0.3);
+        border-color: #a78bfa;
+        transform: scale(1.1);
+      }
+
+      #toggle-camera:active {
+        transform: scale(0.95);
+      }
+
+      /* Camera status indicator */
+      .camera-status {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        padding: 0.5rem 1rem;
+        background: rgba(17, 24, 39, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 100px;
+        font-size: 0.875rem;
+        color: #86efac;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .camera-status-dot {
+        width: 6px;
+        height: 6px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      footer {
+        width: 100%;
+        text-align: center;
+        padding: 1.25rem 0;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.9375rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background: rgba(10, 11, 20, 0.8);
+        backdrop-filter: blur(12px);
+        z-index: 10;
+        font-family: 'Inter', sans-serif;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      footer a {
+        color: #a78bfa;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      footer a:hover {
+        color: #c4b5fd;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+        50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.5); }
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          flex-direction: column;
+          padding: 2rem;
+          gap: 3rem;
+          margin: 1rem;
+        }
+
+        .content {
+          text-align: center;
+        }
+
+        .badge {
+          margin: 0 auto 1.5rem;
+        }
+
+        .stats {
+          margin: 0 auto 2.5rem;
+        }
+
+        .features {
+          justify-content: center;
+        }
+
+        .cta-group {
+          justify-content: center;
+        }
+
+        .title {
+          font-size: 3rem;
+        }
+
+        .subtitle {
+          font-size: 1.125rem;
+        }
+
+        .preview {
+          width: 100%;
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 1.5rem;
+        }
+
+        .title {
+          font-size: 2.25rem;
+        }
+
+        .subtitle {
+          font-size: 1rem;
+        }
+
+        .features {
+          gap: 0.75rem;
+        }
+
+        .feature-item {
+          font-size: 0.875rem;
+          padding: 0.5rem 0.875rem;
+        }
+
+        .start-button {
+          padding: 1rem 2rem;
+          font-size: 1rem;
+        }
+
+        footer {
+          font-size: 0.8125rem;
+          padding: 1rem 0.5rem;
+        }
+      }
+    </style>
+  <meta name="google-site-verification" content="3AaWbNEeEyx6MEkD_cG7jDuTCeZdahll3LvhpY7h4yo" />
+  </head>
+  <body>
+    <div class="background"></div>
+    
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+      <div class="content">
+        <div class="badge">
+          <div class="badge-dot"></div>
+          <span>100% Free & Anonymous</span>
+        </div>
+        
+        <h1 class="title">Talk to Strangers</h1>
+        <p class="subtitle">Connect instantly with people worldwide. Enjoy crystal-clear video, safe and anonymous conversations.</p>
+
+        <div class="features">
+          <div class="feature-item">
+            <span class="feature-icon">🔒</span>
+            <span>Private & Secure</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">⚡</span>
+            <span>Instant Connect</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🌍</span>
+            <span>Global Network</span>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stats-dot"></div>
+          <p class="stats-text">
+            <span id="online-count">Loading...</span> active users
+          </p>
+        </div>
+        
+        <div class="cta-group">
+          <a class="start-button" href="/video.html">Start Video Chat</a>
+        </div>
       </div>
-      <div class="trust-strip">
-        <span class="trust-dot"></span>
-        <span>Anonymous entry, quick skip, text alongside video</span>
+      
+      <div class="preview">
+        <div class="camera-status">
+          <div class="camera-status-dot"></div>
+          <span>Camera Active</span>
+        </div>
+        <video id="my-video" autoplay muted playsinline></video>
+        <button id="toggle-camera" title="Toggle Camera">📷</button>
       </div>
     </div>
-
-    <section class="hero">
-      <article class="hero-panel">
-        <div class="eyebrow">Instant match room</div>
-        <h1>Meet a <span class="accent">new stranger</span> before the page goes quiet.</h1>
-        <p class="lede">
-          Random Connect is built for fast one-on-one conversations. No profiles, no setup maze, no endless
-          menu stack. Open the room, allow camera and mic, and move on the second the vibe is wrong.
-        </p>
-
-        <div class="cta-row">
-          <a class="primary-cta" href="/video.html">Start Video Chat</a>
-          <a class="secondary-cta" href="mailto:srinivaspenumarthi2244@gmail.com">Report a problem</a>
-        </div>
-
-        <div class="status-band">
-          <div class="status-pill">
-            <div class="status-label">Live Queue</div>
-            <div class="status-value live"><span id="online-count">Loading...</span> online now</div>
-          </div>
-          <div class="status-pill">
-            <div class="status-label">Session Style</div>
-            <div class="status-value">Video first, text always</div>
-          </div>
-          <div class="status-pill">
-            <div class="status-label">Moderation Posture</div>
-            <div class="status-value">Manual review + fast exit</div>
-          </div>
-        </div>
-
-        <div class="microcopy">
-          <div class="microcopy-card">
-            Camera access is requested only when you enter the live room.
-          </div>
-          <div class="microcopy-card">
-            If mobile video is inconsistent, stay on stable Wi-Fi and keep the app foregrounded.
-          </div>
-          <div class="microcopy-card">
-            Text chat remains available even when video conditions are weak.
-          </div>
-        </div>
-      </article>
-
-      <aside class="preview-panel">
-        <div class="preview-stage">
-          <video id="my-video" autoplay muted playsinline></video>
-          <div class="preview-overlay">
-            <div class="preview-chip-row">
-              <div class="preview-chip">
-                <span class="preview-dot"></span>
-                <span>Preview camera active</span>
-              </div>
-              <div class="preview-chip" id="camera-status">
-                <span class="preview-dot"></span>
-                <span>Permissions ready</span>
-              </div>
-            </div>
-
-            <div class="preview-copy">
-              <h2>Enter with context, not clutter.</h2>
-              <p>
-                The live room focuses on one conversation at a time, with a smaller self-view, persistent text
-                history, and skip controls that stay reachable on mobile.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="preview-controls">
-          <div class="spec-card">
-            <h3>Before you join</h3>
-            <p class="preview-meta">Use headphones if possible. Keep your browser in the foreground.</p>
-          </div>
-          <div class="safety-card">
-            <h3>Quick safety</h3>
-            <p class="preview-meta">Leave instantly if the conversation turns wrong. No explanation needed.</p>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="detail-grid">
-      <div class="detail-stack">
-        <div class="spec-card">
-          <h3>What the room does well</h3>
-          <ul class="feature-list">
-            <li>
-              <span class="feature-bullet">1</span>
-              <span>Immediate matching flow with video and text in the same session, so silence does not kill the conversation.</span>
-            </li>
-            <li>
-              <span class="feature-bullet">2</span>
-              <span>Low-friction exit. Skip, disconnect, and match-again behavior are designed to feel like one motion, not three pages.</span>
-            </li>
-            <li>
-              <span class="feature-bullet">3</span>
-              <span>Live session instrumentation in the frontend so connection issues can be diagnosed instead of guessed at.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="safety-card">
-        <h3>Ground rules</h3>
-        <ul class="safety-list">
-          <li>
-            <span class="safety-bullet">18+</span>
-            <span>Do not use the room if you are under 18.</span>
-          </li>
-          <li>
-            <span class="safety-bullet">X</span>
-            <span>Leave immediately if behavior becomes abusive or explicit.</span>
-          </li>
-          <li>
-            <span class="safety-bullet">!</span>
-            <span>If mobile video fails, switch to stable Wi-Fi or desktop and continue with text.</span>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <span>Random Connect is still improving the mobile video path. Desktop remains the most stable route.</span>
-      <div class="footer-links">
-        <a href="mailto:srinivaspenumarthi2244@gmail.com">Email</a>
-        <a href="https://www.linkedin.com/in/srinivaspenumarthi" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      </div>
+    
+    <footer>
+      <a href="mailto:srinivaspenumarthi2244@gmail.com">Contact via Email</a> | 
+      <a href="https://www.linkedin.com/in/srinivaspenumarthi" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </footer>
-  </main>
 
-  <script>
-    const socket = io('https://chatbackend-wdog.onrender.com');
-    const previewVideo = document.getElementById('my-video');
-    const cameraStatus = document.getElementById('camera-status');
+    <script>
+      // Create floating particles
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particlesContainer.appendChild(particle);
+      }
 
-    socket.on('online', (count) => {
-      document.getElementById('online-count').innerText = count;
-    });
+      const socket = io('https://chatbackend-wdog.onrender.com');
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then((stream) => {
-        previewVideo.srcObject = stream;
-      })
-      .catch((error) => {
-        console.error('Preview camera error:', error);
-        cameraStatus.innerHTML = '<span class="preview-dot" style="background:#ff7c69"></span><span>Camera unavailable</span>';
+      socket.on('connect', () => {
+        console.log('Connected to server');
       });
-  </script>
-</body>
+
+      socket.on('online', (count) => {
+        document.getElementById('online-count').innerText = count;
+      });
+
+      let videoStream;
+      const videoElement = document.getElementById('my-video');
+      const toggleBtn = document.getElementById('toggle-camera');
+      const cameraStatus = document.querySelector('.camera-status span');
+
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then((stream) => {
+          videoStream = stream;
+          videoElement.srcObject = stream;
+        })
+        .catch((err) => {
+          console.error("Failed to access camera:", err);
+          cameraStatus.textContent = 'Camera Unavailable';
+          cameraStatus.previousElementSibling.style.background = '#ef4444';
+        });
+
+      toggleBtn.addEventListener('click', () => {
+        if (videoStream) {
+          const videoTrack = videoStream.getVideoTracks()[0];
+          videoTrack.enabled = !videoTrack.enabled;
+          toggleBtn.textContent = videoTrack.enabled ? '📷' : '🚫';
+          cameraStatus.textContent = videoTrack.enabled ? 'Camera Active' : 'Camera Off';
+          cameraStatus.previousElementSibling.style.background = videoTrack.enabled ? '#22c55e' : '#ef4444';
+        }
+      });
+    </script>
+  </body>
 </html>
