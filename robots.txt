@@ -8,7 +8,7 @@ Disallow: /cgi-bin/
 Disallow: /*?sessionid=
 Allow: /
 
-Sitemap: https://randomconnect.app/sitemap.xml
+Sitemap: https://randomconnect.netlify.app/sitemap.xml
 
 User-agent: AhrefsBot
 Disallow: /
