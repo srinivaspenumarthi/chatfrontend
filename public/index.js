@@ -15,6 +15,7 @@ let isMatching = false;
 let matchTimer = null;
 let connectionVersion = 0;
 let pendingIceCandidates = [];
+let disconnectTimer = null;
 
 // Show/hide looking message
 function showLookingMessage() {
@@ -109,6 +110,11 @@ function cleanupConnection() {
   connectionVersion += 1;
   pendingIceCandidates = [];
 
+  if (disconnectTimer) {
+    window.clearTimeout(disconnectTimer);
+    disconnectTimer = null;
+  }
+
   if (matchTimer) {
     window.clearTimeout(matchTimer);
     matchTimer = null;
@@ -188,7 +194,32 @@ socket.on('remote-socket', id => {
   peer.oniceconnectionstatechange = () => {
     if (!peer || currentVersion !== connectionVersion) return;
 
-    if (peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'disconnected') {
+    if (peer.iceConnectionState === 'connected' || peer.iceConnectionState === 'completed') {
+      if (disconnectTimer) {
+        window.clearTimeout(disconnectTimer);
+        disconnectTimer = null;
+      }
+      return;
+    }
+
+    if (peer.iceConnectionState === 'disconnected') {
+      if (disconnectTimer) {
+        window.clearTimeout(disconnectTimer);
+      }
+
+      disconnectTimer = window.setTimeout(() => {
+        if (!peer || currentVersion !== connectionVersion) return;
+        if (peer.iceConnectionState !== 'disconnected') return;
+
+        showLookingMessage();
+        cleanupConnection();
+        clearChat();
+        requestMatch(1000);
+      }, 5000);
+      return;
+    }
+
+    if (peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'closed') {
       showLookingMessage();
       cleanupConnection();
       clearChat();
