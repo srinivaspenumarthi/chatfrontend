@@ -1,5 +1,6 @@
 // Global state
 let peer;
+let localStream;
 const myVideo = document.getElementById('my-video');
 const strangerVideo = document.getElementById('video');
 const button = document.getElementById('send');
@@ -10,6 +11,7 @@ let remoteSocket;
 let type;
 let roomid;
 let isConnected = false;
+let isMatching = false;
 
 // Show/hide looking message
 function showLookingMessage() {
@@ -21,24 +23,54 @@ function showLookingMessage() {
 function hideLookingMessage() {
   lookingMessage.style.display = 'none';
   modal.classList.remove('active');
-  isConnected = true;
 }
 
 // Initialize with looking message visible
 showLookingMessage();
 
 // Start media capture
-function start() {
-  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-    .then(stream => {
-      myVideo.srcObject = stream;
+async function start() {
+  try {
+    if (!localStream) {
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    }
 
-      stream.getTracks().forEach(track => peer.addTrack(track, stream));
-    })
-    .catch(ex => {
-      console.error('Error accessing media devices: ', ex);
-      alert('Could not access camera/microphone. Please check permissions.');
+    myVideo.srcObject = localStream;
+
+    if (peer) {
+      localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+    }
+  } catch (ex) {
+    console.error('Error accessing media devices: ', ex);
+    alert('Could not access camera/microphone. Please check permissions.');
+  }
+}
+
+function refreshConnectionState() {
+  isConnected = Boolean(roomid && remoteSocket);
+}
+
+function requestMatch(delay = 0) {
+  if (isMatching) return;
+
+  isMatching = true;
+
+  window.setTimeout(() => {
+    socket.emit('start', person => {
+      type = person;
+      if (!remoteSocket) {
+        showLookingMessage();
+      }
     });
+  }, delay);
+}
+
+function stopLocalStream() {
+  if (!localStream) return;
+
+  localStream.getTracks().forEach(track => track.stop());
+  localStream = null;
+  myVideo.srcObject = null;
 }
 
 // Connect to server
@@ -48,12 +80,9 @@ const socket = io('https://chatbackend-wdog.onrender.com');
 socket.on('disconnected', () => {
   showLookingMessage();
   cleanupConnection();
+  clearChat();
 
-  setTimeout(() => {
-    socket.emit('start', person => {
-      type = person;
-    });
-  }, 1000);
+  requestMatch(1000);
 });
 
 // Skip button functionality
@@ -63,10 +92,7 @@ skipButton.addEventListener('click', () => {
     cleanupConnection();
     showLookingMessage();
     clearChat();
-
-    socket.emit('start', person => {
-      type = person;
-    });
+    requestMatch();
   }
 });
 
@@ -84,18 +110,19 @@ function cleanupConnection() {
 
   remoteSocket = null;
   roomid = null;
-  isConnected = false;
+  isMatching = false;
+  refreshConnectionState();
 }
 
 // --------- WebRTC Logic ---------
 
-socket.emit('start', person => {
-  type = person;
-});
+requestMatch();
 
 // Remote socket received
 socket.on('remote-socket', id => {
   remoteSocket = id;
+  isMatching = false;
+  refreshConnectionState();
   hideLookingMessage();
 
   peer = new RTCPeerConnection({
@@ -127,14 +154,13 @@ socket.on('remote-socket', id => {
   };
 
   peer.oniceconnectionstatechange = () => {
-    if (peer.iceConnectionState === 'failed') {
+    if (!peer) return;
+
+    if (peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'disconnected') {
       showLookingMessage();
       cleanupConnection();
-      setTimeout(() => {
-        socket.emit('start', person => {
-          type = person;
-        });
-      }, 1000);
+      clearChat();
+      requestMatch(1000);
     }
   };
 
@@ -151,6 +177,8 @@ async function webrtc() {
 
 socket.on('sdp:reply', async ({ sdp }) => {
   try {
+    if (!peer) return;
+
     await peer.setRemoteDescription(new RTCSessionDescription(sdp));
     if (type === 'p2') {
       const answer = await peer.createAnswer();
@@ -164,7 +192,7 @@ socket.on('sdp:reply', async ({ sdp }) => {
 
 socket.on('ice:reply', async ({ candidate }) => {
   try {
-    if (candidate) {
+    if (candidate && peer) {
       await peer.addIceCandidate(candidate);
     }
   } catch (error) {
@@ -178,14 +206,10 @@ socket.on('skipped', () => {
   // Cleanup current call
   cleanupConnection();
   showLookingMessage();
-  document.querySelector('.wrapper').innerHTML = '';
+  clearChat();
 
   // Start finding a new person
-  setTimeout(() => {
-    socket.emit('start', (person) => {
-      type = person;
-    });
-  }, 1000);
+  requestMatch(1000);
 });
 
 
@@ -194,7 +218,7 @@ socket.on('skipped', () => {
 socket.on('roomid', id => {
   roomid = id;
   console.log(`Joined room: ${roomid}`);
-  isConnected = true;
+  refreshConnectionState();
 });
 
 button.onclick = () => {
@@ -268,7 +292,14 @@ document.getElementById('toggle-audio').onclick = () => {
 
 // End Call
 document.getElementById('end-call').onclick = () => {
-  socket.emit('end-call', roomid);
+  if (roomid) {
+    socket.emit('skip', roomid);
+  }
+  stopLocalStream();
   cleanupConnection();
-  location.href = '/?disconnect';
+  location.href = '/';
 };
+
+window.addEventListener('beforeunload', () => {
+  stopLocalStream();
+});
