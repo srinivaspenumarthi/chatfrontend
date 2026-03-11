@@ -22,8 +22,9 @@
 <meta name="twitter:title" content="Random Connect - Talk to Random People Online Instantly" />
 <meta name="twitter:description" content="Talk to random people worldwide for free with Random Connect. Safe, instant, and anonymous conversations — start chatting today!" />
 <meta name="twitter:image" content="https://randomconnect.netlify.app/android-chrome-512x512.png" />
+<link rel="canonical" href="https://randomconnect.netlify.app/" />
 
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
   <!-- Critical CSS -->
   <style>
@@ -542,7 +543,7 @@
         </div>
         
         <div class="cta-group">
-          <a class="start-button" href="video.html">Start Video Chat</a>
+          <a class="start-button" href="/video.html">Start Video Chat</a>
         </div>
       </div>
       
@@ -571,10 +572,6 @@
         particle.style.animationDelay = Math.random() * 20 + 's';
         particle.style.animationDuration = (15 + Math.random() * 10) + 's';
         particlesContainer.appendChild(particle);
-      }
-
-      function redirect() {
-        location.href = '/video.html';
       }
 
       const socket = io('https://chatbackend-wdog.onrender.com');
