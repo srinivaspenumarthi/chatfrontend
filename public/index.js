@@ -88,6 +88,7 @@ function cleanupConnection() {
 
   remoteSocket = null;
   roomid = null;
+  type = null;
   isConnected = false;
   isMatching = false;
 }
@@ -115,6 +116,7 @@ async function sendOffer(currentPeer, currentRoomId, currentRemoteSocket) {
 
 async function beginMatch({ remoteSocketId, roomId, type: nextType }) {
   cleanupConnection();
+  console.log('[match-found]', { roomId, remoteSocketId, type: nextType });
 
   const version = sessionVersion;
   const currentPeer = new RTCPeerConnection({
@@ -134,12 +136,16 @@ async function beginMatch({ remoteSocketId, roomId, type: nextType }) {
 
   currentPeer.ontrack = (event) => {
     if (version !== sessionVersion) return;
-    strangerVideo.srcObject = event.streams[0];
-    strangerVideo.play().catch(console.error);
+    const [remoteStream] = event.streams;
+    if (strangerVideo.srcObject !== remoteStream) {
+      strangerVideo.srcObject = remoteStream;
+    }
+    console.log('[ontrack]', { roomId, remoteSocketId, trackKind: event.track?.kind });
   };
 
   currentPeer.onicecandidate = (event) => {
     if (version !== sessionVersion || !event.candidate) return;
+    console.log('[ice-send]', { roomId, remoteSocketId });
     socket.emit('ice:send', {
       candidate: event.candidate,
       to: remoteSocketId,
@@ -149,6 +155,7 @@ async function beginMatch({ remoteSocketId, roomId, type: nextType }) {
 
   currentPeer.oniceconnectionstatechange = () => {
     if (version !== sessionVersion || !peer) return;
+    console.log('[ice-state]', { roomId, state: currentPeer.iceConnectionState });
     if (currentPeer.iceConnectionState === 'failed') {
       console.error('Peer connection failed for room', roomId);
       cleanupConnection();
@@ -213,6 +220,7 @@ socket.on('disconnect', () => {
 });
 
 socket.on('waiting', ({ roomId, type: nextType }) => {
+  console.log('[waiting]', { roomId, type: nextType });
   roomid = roomId;
   type = nextType;
   isMatching = true;
@@ -229,6 +237,7 @@ socket.on('match-found', (payload) => {
 });
 
 socket.on('partner-left', () => {
+  console.log('[partner-left]', { roomId: roomid });
   cleanupConnection();
   clearChat();
   showLookingMessage();
@@ -238,6 +247,7 @@ socket.on('partner-left', () => {
 socket.on('sdp:reply', async ({ sdp, from, roomId }) => {
   try {
     if (!peer || from !== remoteSocket || roomId !== roomid) return;
+    console.log('[sdp-reply]', { roomId, from, type });
 
     await peer.setRemoteDescription(new RTCSessionDescription(sdp));
     await flushPendingIceCandidates(peer);
@@ -259,6 +269,7 @@ socket.on('sdp:reply', async ({ sdp, from, roomId }) => {
 socket.on('ice:reply', async ({ candidate, from, roomId }) => {
   try {
     if (!peer || from !== remoteSocket || roomId !== roomid || !candidate) return;
+    console.log('[ice-reply]', { roomId, from });
 
     if (peer.remoteDescription) {
       await peer.addIceCandidate(candidate);
@@ -272,11 +283,13 @@ socket.on('ice:reply', async ({ candidate, from, roomId }) => {
 });
 
 socket.on('get-message', (message) => {
+  console.log('[message-received]', { roomId: roomid });
   addMessageToChat(message, 'received');
 });
 
 skipButton.addEventListener('click', () => {
   if (!roomid) return;
+  console.log('[skip-click]', { roomId: roomid });
   socket.emit('skip', { roomId: roomid });
   cleanupConnection();
   clearChat();
