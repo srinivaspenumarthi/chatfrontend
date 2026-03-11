@@ -8,7 +8,7 @@
   </url>
 
   <url>
-    <loc>https://randomconnect.netlify.app/video</loc>
+    <loc>https://randomconnect.netlify.app/video.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
