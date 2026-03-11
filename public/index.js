@@ -144,7 +144,7 @@ function cleanupConnection() {
 
 requestMatch();
 
-socket.on('match-found', ({ remoteSocketId, roomId, type: nextType }) => {
+function handleMatchFound(remoteSocketId, roomId, nextType = type) {
   const currentVersion = connectionVersion + 1;
 
   if (peer) {
@@ -229,6 +229,23 @@ socket.on('match-found', ({ remoteSocketId, roomId, type: nextType }) => {
   };
 
   start(); // ✅ Start media after peer is ready
+}
+
+socket.on('match-found', ({ remoteSocketId, roomId, type: nextType }) => {
+  handleMatchFound(remoteSocketId, roomId, nextType);
+});
+
+socket.on('roomid', id => {
+  roomid = id;
+  refreshConnectionState();
+});
+
+socket.on('remote-socket', id => {
+  if (!roomid) {
+    return;
+  }
+
+  handleMatchFound(id, roomid, type);
 });
 
 async function webrtc() {
