@@ -65,8 +65,8 @@ function requestMatch(delay = 0) {
 
   matchTimer = window.setTimeout(() => {
     matchTimer = null;
-    socket.emit('start', person => {
-      type = person;
+    socket.emit('start', payload => {
+      type = payload.type;
       if (!remoteSocket) {
         showLookingMessage();
       }
@@ -97,7 +97,7 @@ socket.on('disconnected', () => {
 // Skip button functionality
 skipButton.addEventListener('click', () => {
   if (isConnected) {
-    socket.emit('skip', roomid);
+    socket.emit('skip', { roomId: roomid });
     cleanupConnection();
     showLookingMessage();
     clearChat();
@@ -144,15 +144,16 @@ function cleanupConnection() {
 
 requestMatch();
 
-// Remote socket received
-socket.on('remote-socket', id => {
+socket.on('match-found', ({ remoteSocketId, roomId, type: nextType }) => {
   const currentVersion = connectionVersion + 1;
 
   if (peer) {
     cleanupConnection();
   }
 
-  remoteSocket = id;
+  remoteSocket = remoteSocketId;
+  roomid = roomId;
+  type = nextType;
   isMatching = false;
   refreshConnectionState();
   hideLookingMessage();
@@ -187,7 +188,7 @@ socket.on('remote-socket', id => {
     if (currentVersion !== connectionVersion) return;
 
     if (e.candidate) {
-      socket.emit('ice:send', { candidate: e.candidate, to: remoteSocket });
+      socket.emit('ice:send', { candidate: e.candidate, to: remoteSocket, roomId: roomid });
     }
   };
 
@@ -234,7 +235,7 @@ async function webrtc() {
   if (type === 'p1' && peer && remoteSocket) {
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
-    socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket });
+    socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket, roomId: roomid });
   }
 }
 
@@ -259,7 +260,7 @@ socket.on('sdp:reply', async ({ sdp, from }) => {
     if (type === 'p2') {
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
-      socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket });
+      socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket, roomId: roomid });
     }
   } catch (error) {
     console.error('SDP error:', error);
@@ -295,17 +296,11 @@ socket.on('skipped', () => {
 
 // ----------- Message Logic -----------
 
-socket.on('roomid', id => {
-  roomid = id;
-  console.log(`Joined room: ${roomid}`);
-  refreshConnectionState();
-});
-
 button.onclick = () => {
   const inputBox = document.querySelector('input');
   const message = inputBox.value.trim();
   if (message !== '' && isConnected) {
-    socket.emit('send-message', message, type, roomid);
+    socket.emit('send-message', { message, roomId: roomid });
     addMessageToChat(message, 'sent');
     inputBox.value = '';
   }
@@ -373,7 +368,7 @@ document.getElementById('toggle-audio').onclick = () => {
 // End Call
 document.getElementById('end-call').onclick = () => {
   if (roomid) {
-    socket.emit('skip', roomid);
+    socket.emit('skip', { roomId: roomid });
   }
   stopLocalStream();
   cleanupConnection();
