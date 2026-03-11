@@ -14,6 +14,7 @@ let isConnected = false;
 let isMatching = false;
 let matchTimer = null;
 let connectionVersion = 0;
+let pendingIceCandidates = [];
 
 // Show/hide looking message
 function showLookingMessage() {
@@ -106,6 +107,7 @@ skipButton.addEventListener('click', () => {
 // Cleanup function
 function cleanupConnection() {
   connectionVersion += 1;
+  pendingIceCandidates = [];
 
   if (matchTimer) {
     window.clearTimeout(matchTimer);
@@ -205,11 +207,24 @@ async function webrtc() {
   }
 }
 
+async function flushPendingIceCandidates() {
+  if (!peer || !peer.remoteDescription) return;
+
+  while (pendingIceCandidates.length > 0) {
+    const candidate = pendingIceCandidates.shift();
+    if (candidate) {
+      await peer.addIceCandidate(candidate);
+    }
+  }
+}
+
 socket.on('sdp:reply', async ({ sdp, from }) => {
   try {
     if (!peer || from !== remoteSocket) return;
 
     await peer.setRemoteDescription(new RTCSessionDescription(sdp));
+    await flushPendingIceCandidates();
+
     if (type === 'p2') {
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
@@ -223,7 +238,11 @@ socket.on('sdp:reply', async ({ sdp, from }) => {
 socket.on('ice:reply', async ({ candidate, from }) => {
   try {
     if (candidate && peer && from === remoteSocket) {
-      await peer.addIceCandidate(candidate);
+      if (peer.remoteDescription) {
+        await peer.addIceCandidate(candidate);
+      } else {
+        pendingIceCandidates.push(candidate);
+      }
     }
   } catch (error) {
     console.error('ICE error:', error);
