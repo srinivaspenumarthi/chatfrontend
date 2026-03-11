@@ -12,6 +12,8 @@ let type;
 let roomid;
 let isConnected = false;
 let isMatching = false;
+let matchTimer = null;
+let connectionVersion = 0;
 
 // Show/hide looking message
 function showLookingMessage() {
@@ -55,7 +57,12 @@ function requestMatch(delay = 0) {
 
   isMatching = true;
 
-  window.setTimeout(() => {
+  if (matchTimer) {
+    window.clearTimeout(matchTimer);
+  }
+
+  matchTimer = window.setTimeout(() => {
+    matchTimer = null;
     socket.emit('start', person => {
       type = person;
       if (!remoteSocket) {
@@ -98,7 +105,18 @@ skipButton.addEventListener('click', () => {
 
 // Cleanup function
 function cleanupConnection() {
+  connectionVersion += 1;
+
+  if (matchTimer) {
+    window.clearTimeout(matchTimer);
+    matchTimer = null;
+  }
+
   if (peer) {
+    peer.ontrack = null;
+    peer.onnegotiationneeded = null;
+    peer.onicecandidate = null;
+    peer.oniceconnectionstatechange = null;
     peer.close();
     peer = null;
   }
@@ -120,10 +138,17 @@ requestMatch();
 
 // Remote socket received
 socket.on('remote-socket', id => {
+  const currentVersion = connectionVersion + 1;
+
+  if (peer) {
+    cleanupConnection();
+  }
+
   remoteSocket = id;
   isMatching = false;
   refreshConnectionState();
   hideLookingMessage();
+  connectionVersion = currentVersion;
 
   peer = new RTCPeerConnection({
     iceServers: [
@@ -134,6 +159,8 @@ socket.on('remote-socket', id => {
 
   // ✅ Setup ontrack FIRST
   peer.ontrack = e => {
+    if (currentVersion !== connectionVersion) return;
+
     strangerVideo.srcObject = e.streams[0];
     strangerVideo.play().catch(console.error);
     hideLookingMessage();
@@ -141,6 +168,7 @@ socket.on('remote-socket', id => {
 
   peer.onnegotiationneeded = async () => {
     try {
+      if (currentVersion !== connectionVersion) return;
       await webrtc();
     } catch (error) {
       console.error('Negotiation error:', error);
@@ -148,13 +176,15 @@ socket.on('remote-socket', id => {
   };
 
   peer.onicecandidate = e => {
+    if (currentVersion !== connectionVersion) return;
+
     if (e.candidate) {
       socket.emit('ice:send', { candidate: e.candidate, to: remoteSocket });
     }
   };
 
   peer.oniceconnectionstatechange = () => {
-    if (!peer) return;
+    if (!peer || currentVersion !== connectionVersion) return;
 
     if (peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'disconnected') {
       showLookingMessage();
@@ -168,31 +198,31 @@ socket.on('remote-socket', id => {
 });
 
 async function webrtc() {
-  if (type === 'p1') {
+  if (type === 'p1' && peer && remoteSocket) {
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
-    socket.emit('sdp:send', { sdp: peer.localDescription });
+    socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket });
   }
 }
 
-socket.on('sdp:reply', async ({ sdp }) => {
+socket.on('sdp:reply', async ({ sdp, from }) => {
   try {
-    if (!peer) return;
+    if (!peer || from !== remoteSocket) return;
 
     await peer.setRemoteDescription(new RTCSessionDescription(sdp));
     if (type === 'p2') {
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
-      socket.emit('sdp:send', { sdp: peer.localDescription });
+      socket.emit('sdp:send', { sdp: peer.localDescription, to: remoteSocket });
     }
   } catch (error) {
     console.error('SDP error:', error);
   }
 });
 
-socket.on('ice:reply', async ({ candidate }) => {
+socket.on('ice:reply', async ({ candidate, from }) => {
   try {
-    if (candidate && peer) {
+    if (candidate && peer && from === remoteSocket) {
       await peer.addIceCandidate(candidate);
     }
   } catch (error) {
